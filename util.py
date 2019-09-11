@@ -1,11 +1,13 @@
-from pprint import pprint
+import hashlib
 import json
 import logging
+import secrets
+import string
 import sys
-from urllib.parse import urljoin
-from urllib.request import urlopen, Request
+from pprint import pprint
 from urllib.error import HTTPError
-import hashlib
+from urllib.parse import urljoin
+from urllib.request import Request, urlopen
 
 LOG_FORMAT = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
 
@@ -70,3 +72,16 @@ def get_digest(fo):
     for buf in iter(lambda: fo.read(4096), b''):
         sha256.update(buf)
     return sha256.hexdigest()
+
+
+def pwgen(pwlen: int = None) -> string:
+    """
+    Generate random string with length `pwlen`, default `pwlen = 8`
+    """
+    if not pwlen:
+        pwlen = 8
+    alphabet = string.ascii_letters + string.digits
+    passwd = []
+    while len(passwd) < pwlen:
+        passwd.append(secrets.choice(alphabet))
+    return ''.join(passwd)
